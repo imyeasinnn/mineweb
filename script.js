@@ -6,6 +6,75 @@
 (function () {
   "use strict";
 
+  /* ----------------------------- Urgency countdown ----------------------------- */
+
+  var countdownEl = document.getElementById("launchCountdown");
+  var heroUrgency = document.getElementById("heroUrgency");
+  var ctaUrgency = document.getElementById("ctaUrgency");
+
+  if (countdownEl) {
+    // Deadline = 7 days from first visit (persisted in localStorage so it keeps
+    // ticking down rather than resetting on reload). Swap for a fixed date:
+    //   deadline = new Date("2026-10-04T23:59:59").getTime();
+    var CLOSE_KEY = "bgs-close-at";
+    var WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+    var deadline = Number(localStorage.getItem(CLOSE_KEY));
+    if (!deadline || Number.isNaN(deadline) || deadline - Date.now() > WEEK_MS) {
+      deadline = Date.now() + WEEK_MS;
+      try {
+        localStorage.setItem(CLOSE_KEY, String(deadline));
+      } catch (e) {
+        /* private mode: countdown just restarts each visit */
+      }
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    function showClosedState() {
+      countdownEl.textContent = "LAST CHANCE";
+      var banner = document.getElementById("launchBanner");
+      if (banner) banner.classList.add("launch-live");
+      var label = document.querySelector(".launch-label");
+      if (label) label.lastChild.textContent = " Final hours —";
+      if (heroUrgency) {
+        heroUrgency.hidden = false;
+        heroUrgency.textContent = "⏳ Final hours — site closing";
+      }
+      if (ctaUrgency) ctaUrgency.closest(".cta-urgency").textContent =
+        "⏳ Final hours — the site is closing. Secure your quote now.";
+    }
+
+    function renderCountdown() {
+      var remaining = deadline - Date.now();
+      if (remaining <= 0) {
+        showClosedState();
+        return; // caller stops the interval
+      }
+      var days = Math.floor(remaining / 86400000);
+      var hours = Math.floor(remaining / 3600000) % 24;
+      var mins = Math.floor(remaining / 60000) % 60;
+      var secs = Math.floor(remaining / 1000) % 60;
+      countdownEl.textContent =
+        days + "d " + pad(hours) + "h " + pad(mins) + "m " + pad(secs) + "s";
+
+      // Sync the plain-text urgency mentions with the real countdown.
+      var dayWord = days === 1 ? "day" : "days";
+      if (heroUrgency) {
+        heroUrgency.hidden = false;
+        heroUrgency.textContent = "⏳ Site closes in " + days + " " + dayWord;
+      }
+      if (ctaUrgency) ctaUrgency.textContent = String(days);
+    }
+
+    renderCountdown();
+    var countdownTimer = setInterval(function () {
+      renderCountdown();
+      if (deadline - Date.now() <= 0) clearInterval(countdownTimer);
+    }, 1000);
+  }
+
   /* --------------------------------- Footer year ------------------------------ */
   var yearEl = document.getElementById("year");
   if (yearEl) {

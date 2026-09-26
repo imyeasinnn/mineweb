@@ -21,6 +21,18 @@
     />
   </head>
   <body>
+    <!-- ============================ Urgency countdown ============================= -->
+    <div class="launch-banner" id="launchBanner" role="status">
+      <div class="container launch-inner">
+        <span class="launch-label launch-label--urgent">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          This website closes in
+        </span>
+        <span class="launch-countdown" id="launchCountdown">7d 00h 00m 00s</span>
+        <a class="launch-call" href="tel:+12078435739">⚡ Act now — lock in your free quote: (207) 843-5739</a>
+      </div>
+    </div>
+
     <!-- =============================== Header / Nav =============================== -->
     <header class="site-header" id="top">
       <div class="container header-inner">
@@ -82,6 +94,7 @@
               5.0 on Google
             </span>
             <span class="badge">✔ Licensed &amp; Insured</span>
+            <span class="badge badge-urgent" id="heroUrgency" hidden>⏳ Site closes in 7 days</span>
           </div>
 
           <h1 id="hero-heading" class="hero-title">
@@ -249,6 +262,10 @@
             <h2>Don't wait for the next outage.</h2>
             <p>
               Call <a href="tel:+12078435739">(207) 843-5739</a> today.
+            </p>
+            <p class="cta-urgency">
+              ⏳ This website closes in <span id="ctaUrgency">7 days</span> — secure your quote
+              before it's gone.
             </p>
           </div>
           <a href="tel:+12078435739" class="btn btn-dark btn-lg">📞 (207) 843-5739</a>
